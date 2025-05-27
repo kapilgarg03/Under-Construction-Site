@@ -1,0 +1,33 @@
+name: Deploy Under Construction Page
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Inject Site Title from Secret
+        run: |
+          mkdir public
+          sed -e "s/{{SITE_TITLE}}/${{ secrets.SITE_TITLE }}/g" \
+          -e "s/{{PAGE_TITLE}}/${{ secrets.PAGE_TITLE }}/g" \
+          index.html > public/index.html
+          cp style.css public/style.css
+
+      - name: Add .nojekyll file
+        run: touch public/.nojekyll
+        
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.GH_PAT }}
+          publish_dir: ./public
+          cname: ${{ secrets.CUSTOM_DOMAIN }}
