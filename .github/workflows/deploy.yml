@@ -21,6 +21,7 @@ jobs:
           -e "s/{{PAGE_TITLE}}/${{ secrets.PAGE_TITLE }}/g" \
           index.html > public/index.html
           cp style.css public/style.css
+          cp particles.json public/particles.json
 
       - name: Add .nojekyll file
         run: touch public/.nojekyll
